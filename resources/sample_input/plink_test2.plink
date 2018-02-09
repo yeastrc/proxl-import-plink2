@@ -1,0 +1,43 @@
+[version]
+version = 2.3.0
+[score]
+simple_score_type = ST_XLINK_OBM25
+[flow]
+flow_type = FT_ION_INDEX
+processor_num = 1
+result_output_path = C:\Users\PLink User\Desktop\gTuSC\\plink_test2\
+[database]
+db_name = gTuSC-parsimonious-plusRev
+enzyme_name = Trypsin
+max_miss_site = 3
+min_pep_mass = 600
+max_pep_mass = 6000
+min_pep_len = 6
+max_pep_len = 60
+[modification]
+fix_total = 1
+fix_mod1 = Carbamidomethyl[C]
+var_total = 1
+var_mod1 = Oxidation[M]
+[linker]
+linker_total = 1
+linker1 = BS3
+[ions]
+fragment_tol = 20
+fragment_tol_type = ppm
+peptide_tol = 20
+peptide_tol_type = ppm
+simple_instrument = HCD-basic
+refined_instrument = HCD
+[filter]
+filter_tol = 10
+filter_tol_type = ppm
+FDR = 0.05
+evalue = 1
+[spectrum]
+spec_title = gTuSC-parsimonious-plusRev_2018.02.07
+spec_type = mgf
+spec_num = 1
+spec_path1 = C:\Users\PLink User\Desktop\gTuSC\Q_2013_1010_RJ_07.mgf
+[quant]
+quant = 1|None
