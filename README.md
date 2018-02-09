@@ -3,7 +3,7 @@ pLink 2.x to ProXL XML Converter
 
 Use this program to convert the results of a pLink 2.x cross-linking analysis to Proxl XML suitable for import into the proxl web application.
 
-Note: If you are using pLink 2.x, please go to [pLink 2.x converter](https://github.com/yeastrc/proxl-import-plink2)
+Note: If you are using pLink 1.x, please go to [pLink 1.x converter](https://github.com/yeastrc/proxl-import-plink)
 
 Currently only unlabeled data using a single linker are supported by this converter. If you are using isotope labels, quantification,
 or multiple linkers with your pLink 2.x data, please email us at mriffle .at. uw.edu. We will be happy to work with you to get your data supported.
