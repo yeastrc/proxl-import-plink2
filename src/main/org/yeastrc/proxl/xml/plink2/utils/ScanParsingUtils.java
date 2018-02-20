@@ -30,31 +30,8 @@ import java.util.regex.Pattern;
  */
 public class ScanParsingUtils {
 
-	private static final Pattern r = Pattern.compile( "^.+\\.\\d+\\.(\\d+)\\.(\\d+)$" );
-	
-	/**
-	 * Get the charge from the reported scan. E.g.: Q_2013_1010_RJ_07.14315.14315.4
-	 * Would return 4
-	 * @param reportedScan The reported scan from the plink results file, in the form of Q_2013_1010_RJ_07.14315.14315.4
-	 * @return The charge parsed from the scan
-	 * @throws Exception
-	 */
-	public static int getChargeFromReportedScan( String reportedScan ) throws Exception {
-				
-		// first split on spaces, then check each element's syntax for expected syntax above
-		String[] elements = reportedScan.split( " " );
-		
-		for( String element : elements ) {
-			
-			Matcher m = r.matcher( element );
-			if( m.matches() ) {
-			
-				return Integer.parseInt( m.group( 2 ) );
-			}
-		}
-		
-		throw new Exception( "Could not find expected syntax for reporting scan information. Got: " + reportedScan );
-	}
+	private static final Pattern mgf_scan_pattern = Pattern.compile( "^.+\\.\\d+\\.(\\d+)\\.(\\d+)$" );
+	private static final Pattern raw_scan_pattern = Pattern.compile( "^.+\\.\\d+\\.(\\d+)\\.(\\d+)$" );
 	
 	/**
 	 * Get the scan number from the reported scan. E.g.: Q_2013_1010_RJ_07.14315.14315.4
@@ -72,7 +49,7 @@ public class ScanParsingUtils {
 		
 		for( String element : elements ) {
 			
-			Matcher m = r.matcher( element );
+			Matcher m = mgf_scan_pattern.matcher( element );
 			if( m.matches() ) {
 			
 				return Integer.parseInt( m.group( 1 ) );
