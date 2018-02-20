@@ -30,8 +30,12 @@ import java.util.regex.Pattern;
  */
 public class ScanParsingUtils {
 
+	// MGF PSM id example: Q_2013_1010_RJ_07.23444.23444.3
 	private static final Pattern mgf_scan_pattern = Pattern.compile( "^.+\\.\\d+\\.(\\d+)\\.(\\d+)$" );
-	private static final Pattern raw_scan_pattern = Pattern.compile( "^.+\\.\\d+\\.(\\d+)\\.(\\d+)$" );
+	
+	// RAW PSM id example: Q_2013_1010_RJ_07.25422.25422.3.0.dta
+	//																		25422   .  3   .  0  ."dta"
+	private static final Pattern raw_scan_pattern = Pattern.compile( "^.+\\.(\\d+)\\.\\d+\\.\\d+\\.dta$" );
 	
 	/**
 	 * Get the scan number from the reported scan. E.g.: Q_2013_1010_RJ_07.14315.14315.4
@@ -51,8 +55,12 @@ public class ScanParsingUtils {
 			
 			Matcher m = mgf_scan_pattern.matcher( element );
 			if( m.matches() ) {
-			
 				return Integer.parseInt( m.group( 1 ) );
+			} else {
+				m = raw_scan_pattern.matcher( element );
+				if( m.matches() ) {
+					return Integer.parseInt( m.group( 1 ) );
+				}
 			}
 		}
 		
