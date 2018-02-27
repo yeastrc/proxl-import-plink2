@@ -17,9 +17,18 @@ Options:
 	-p	[Required] Full path to pLink 2 parameters file used in the search (ends in .plink).
 	-o	[Required] Full path to use for the ProXL XML output file (including file name).
 	-f	[Required] Full path to FASTA file used in the experiment.
+	
 	-b	[Optional] Full path to the pLink installation directory, where modification.ini and xlink.ini may be found.
 		           This defaults to: C:\pFindStudio\pLink\$VERSION\bin
 		           Where $VERSION is found in the parameters file.
 	-r	[Optional] Full path to the data reports directory for pLink 2 results. This directory 
 		           contains run_name.date.csv (e.g. my_plink_search_2018.02.25.csv)
 		           If not present, value from the parameters file will be used.
+	-l  [Optional] Specify the name of the cross-linker in a form proxl will recognize. This is
+	               only necessary if this program cannot automatically identify which cross-linker
+	               you are using. Cross-linker must be one of: edc, bs3, dss, bs3.sty, dss.sty, bs2
+	               This may happen if you are using your own cross-linker definition for a supported
+	               cross-linker (such as a custom mono-link mass for EDC). If you are using a
+	               cross-linker not in this list, please email mriffle .at. uw.edu to get support
+	               added for your cross-linker to proxl.
+

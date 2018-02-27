@@ -36,10 +36,10 @@ import jargs.gnu.CmdLineParser.UnknownOptionException;
 public class MainProgram {
 
 	
-	public void convertSearch( String plinkSearchParametersFile, String plinkBinDirectory, String plinkDataDirectory, String outfile, String fastaFilePath ) throws Exception {
+	public void convertSearch( String plinkSearchParametersFile, String plinkBinDirectory, String plinkDataDirectory, String outfile, String fastaFilePath, String linkerOverride ) throws Exception {
 		
 		System.err.print( "Loading search parameters... " );
-		PLinkSearchParameters params = PLinkSearchParametersLoader.getInstance().getPLinkSearch( plinkSearchParametersFile, plinkBinDirectory );
+		PLinkSearchParameters params = PLinkSearchParametersLoader.getInstance().getPLinkSearch( plinkSearchParametersFile, plinkBinDirectory, linkerOverride );
 		System.err.println( "Done." );
 		
 		System.err.print( "Loading search results... " );
@@ -66,6 +66,7 @@ public class MainProgram {
 		CmdLineParser.Option installDirectoryOpt = cmdLineParser.addStringOption( 'b', "binary" );	
 		CmdLineParser.Option dataDirectoryOpt = cmdLineParser.addStringOption( 'r', "reports" );
 		CmdLineParser.Option fastaFileOpt = cmdLineParser.addStringOption( 'f', "fasta" );
+		CmdLineParser.Option linkerOpt = cmdLineParser.addStringOption( 'l', "linker" );
 
         // parse command line options
         try { cmdLineParser.parse(args); }
@@ -83,9 +84,10 @@ public class MainProgram {
         String binDirectory = (String)cmdLineParser.getOptionValue( installDirectoryOpt );
         String dataDirectory = (String)cmdLineParser.getOptionValue( dataDirectoryOpt );
         String fastaFilePath = (String)cmdLineParser.getOptionValue( fastaFileOpt );
+        String linker = (String)cmdLineParser.getOptionValue( linkerOpt );
         
         MainProgram mp = new MainProgram();
-        mp.convertSearch( paramFile, binDirectory, dataDirectory, outFile, fastaFilePath );
+        mp.convertSearch( paramFile, binDirectory, dataDirectory, outFile, fastaFilePath, linker );
         
 	}
 	

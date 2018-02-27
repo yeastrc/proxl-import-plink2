@@ -37,6 +37,10 @@ public class PLinkLinker {
 	 * @throws Exception
 	 */
 	public String getProxlName() throws Exception {
+		
+		if( this.proxlNameOverride != null )
+			return this.proxlNameOverride;
+		
 		if( !PLinkConstants.LINKER_MAP_PLINK2PROXL.containsKey( this.getName() ) )
 			throw new Exception( "Can not map " + this.getName() + " to a ProXL linker." );
 		
@@ -99,15 +103,31 @@ public class PLinkLinker {
 		this.averageMonolinkMass = averageMonolinkMass;
 	}
 
+	/**
+	 * @return the proxlNameOverride
+	 */
+	public String getProxlNameOverride() {
+		return proxlNameOverride;
+	}
+
+	/**
+	 * @param proxlNameOverride the proxlNameOverride to set
+	 */
+	public void setProxlNameOverride(String proxlNameOverride) {
+		this.proxlNameOverride = proxlNameOverride;
+	}
+
 
 
 
 	private String name;
+	private String proxlNameOverride;			// if this is set, this string will be used for the linker name that proxl recognizes
 	private String firstLinkedResidueMotif;
 	private String secondLinkedResidueMotif;
 	private Double monoCrosslinkMass;
 	private Double averageCrosslinkMass;
 	private Double monoMonolinkMass;
 	private Double averageMonolinkMass;
+	
 	
 }
