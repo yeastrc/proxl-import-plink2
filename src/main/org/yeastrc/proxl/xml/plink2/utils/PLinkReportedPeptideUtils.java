@@ -219,17 +219,22 @@ public class PLinkReportedPeptideUtils {
 		
 		Map<Integer, Collection<PLinkModification>> mods = ModificationLookupUtils.getDynamicModificationsFromModString( plinkModString, params );
 		
-		// add monolink as a mod
-		if( !mods.containsKey( position1 ) )
-			mods.put( position1, new ArrayList<PLinkModification>() );
-		
-		PLinkModification monoLinkMod = new PLinkModification();
-		monoLinkMod.setAverageMass( params.getLinker().getAverageMonolinkMass() );
-		monoLinkMod.setMonoisotopicMass( params.getLinker().getMonoMonolinkMass() );
-		monoLinkMod.setMonolink( true );
-		monoLinkMod.setName( "monolink" );
-		
-		mods.get( position1 ).add( monoLinkMod );
+		// only add monolink as a mod, if the monolink has a mass
+		// pLink2 reports monolinks as mass 0.000 for EDC--which is no bueno
+		if( params.getLinker().getMonoMonolinkMass() > 0.00001 ) {
+
+			// add monolink as a mod
+			if( !mods.containsKey( position1 ) )
+				mods.put( position1, new ArrayList<PLinkModification>() );
+			
+			PLinkModification monoLinkMod = new PLinkModification();
+			monoLinkMod.setAverageMass( params.getLinker().getAverageMonolinkMass() );
+			monoLinkMod.setMonoisotopicMass( params.getLinker().getMonoMonolinkMass() );
+			monoLinkMod.setMonolink( true );
+			monoLinkMod.setName( "monolink" );
+			
+			mods.get( position1 ).add( monoLinkMod );
+		}
 		
 		PLinkPeptide pep = new PLinkPeptide();
 		pep.setSequence( parsedSequence );
