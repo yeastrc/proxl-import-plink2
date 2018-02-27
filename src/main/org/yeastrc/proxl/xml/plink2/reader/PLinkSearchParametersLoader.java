@@ -91,7 +91,7 @@ public class PLinkSearchParametersLoader {
 		plinkSearch.setLinker( linker );
 		
 		// ensure proxl supports this linker
-		if( !PLinkConstants.LINKER_MAP_PLINK2PROXL.containsKey( plinkSearch.getLinker().getName() ) ) {
+		if( !PLinkConstants.LINKER_MAP_PLINK2PROXL.containsKey( plinkSearch.getLinker().getName() ) && linkerOverride == null ) {
 			throw new Exception( "Proxl does not currently support linker: " + plinkSearch.getLinker().getName() );
 		}
 		
