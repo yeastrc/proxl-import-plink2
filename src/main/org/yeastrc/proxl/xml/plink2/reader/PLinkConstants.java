@@ -58,6 +58,7 @@ public class PLinkConstants {
         tempLinkerMap.put( "BS3", "bs3" );
         tempLinkerMap.put( "DSS_STY",  "dss.sty" );
         tempLinkerMap.put( "DSS",  "dss" );
+        tempLinkerMap.put( "DSSO",  "dsso" );
         tempLinkerMap.put( "EDC-DE",  "edc" );
         tempLinkerMap.put( "EDC",  "edc" );
         tempLinkerMap.put( "BS2G",  "bs2" );

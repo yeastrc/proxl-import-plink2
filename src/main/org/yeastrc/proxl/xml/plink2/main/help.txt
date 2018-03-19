@@ -26,7 +26,7 @@ Options:
 		           If not present, value from the parameters file will be used.
 	-l  [Optional] Specify the name of the cross-linker in a form proxl will recognize. This is
 	               only necessary if this program cannot automatically identify which cross-linker
-	               you are using. Cross-linker must be one of: edc, bs3, dss, bs3.sty, dss.sty, bs2
+	               you're using. Must be one of: edc, bs3, dss, dsso, bs3.sty, dss.sty, bs2
 	               This may happen if you are using your own cross-linker definition for a supported
 	               cross-linker (such as a custom mono-link mass for EDC). If you are using a
 	               cross-linker not in this list, please email mriffle .at. uw.edu to get support
