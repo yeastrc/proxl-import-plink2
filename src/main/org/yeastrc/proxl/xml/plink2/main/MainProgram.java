@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 
 import org.yeastrc.proxl.xml.plink2.builder.XMLBuilder;
+import org.yeastrc.proxl.xml.plink2.constants.PLinkConverterConstants;
 import org.yeastrc.proxl.xml.plink2.objects.PLinkResult;
 import org.yeastrc.proxl.xml.plink2.reader.PLinkResultsLoader;
 import org.yeastrc.proxl.xml.plink2.reader.PLinkSearchParameters;
@@ -54,18 +55,19 @@ public class MainProgram {
 	
 	public static void main( String[] args ) throws Exception {
 		
+		printRuntimeInfo();
+		
 		if( args.length < 1 || args[ 0 ].equals( "-h" ) ) {
 			printHelp();
 			System.exit( 0 );
 		}
 		
 		CmdLineParser cmdLineParser = new CmdLineParser();
-        
 		CmdLineParser.Option plinkParamOpt = cmdLineParser.addStringOption( 'p', "param" );	
-		CmdLineParser.Option outfileOpt = cmdLineParser.addStringOption( 'o', "out" );	
+		CmdLineParser.Option outfileOpt = cmdLineParser.addStringOption( 'o', "out" );
+		CmdLineParser.Option fastaFileOpt = cmdLineParser.addStringOption( 'f', "fasta" );
 		CmdLineParser.Option installDirectoryOpt = cmdLineParser.addStringOption( 'b', "binary" );	
 		CmdLineParser.Option dataDirectoryOpt = cmdLineParser.addStringOption( 'r', "reports" );
-		CmdLineParser.Option fastaFileOpt = cmdLineParser.addStringOption( 'f', "fasta" );
 		CmdLineParser.Option linkerOpt = cmdLineParser.addStringOption( 'l', "linker" );
 
         // parse command line options
@@ -80,15 +82,57 @@ public class MainProgram {
         }
 		
         String paramFile = (String)cmdLineParser.getOptionValue( plinkParamOpt );
+        checkFileFromArgsExists( true, paramFile, "p", "plink params" );
+        
+        String fastaFilePath = (String)cmdLineParser.getOptionValue( fastaFileOpt );
+        checkFileFromArgsExists( true, fastaFilePath, "f", "FASTA" );
+        
         String outFile = (String)cmdLineParser.getOptionValue( outfileOpt );
+        if( outFile == null ) {
+        	System.err.println( "The -o option is required." );
+        	System.err.println( "Run with the -h option for help." );
+        	System.exit( 1 );
+        }
+        
         String binDirectory = (String)cmdLineParser.getOptionValue( installDirectoryOpt );
         String dataDirectory = (String)cmdLineParser.getOptionValue( dataDirectoryOpt );
-        String fastaFilePath = (String)cmdLineParser.getOptionValue( fastaFileOpt );
         String linker = (String)cmdLineParser.getOptionValue( linkerOpt );
         
         MainProgram mp = new MainProgram();
         mp.convertSearch( paramFile, binDirectory, dataDirectory, outFile, fastaFilePath, linker );
         
+	}
+	
+	private static void checkFileFromArgsExists( boolean required, String filePath, String param, String name ) {
+				
+        if( filePath == null ) {
+        	
+        	if( !required ) {
+        		return;
+        	}
+        	
+			System.err.println( "The -" + param + " parameter is required." );
+        	System.err.println( "Run with the -h option for help." );
+			System.exit( 0 );
+        } else {
+        	File file = new File( filePath );
+            try {
+	
+	        	if( !file.exists() ) {
+	        		System.err.println( "Could not find " + name + " file: " + file.getAbsolutePath() );
+	        		System.exit( 0 );
+	        	}
+	        	
+	        	if( !file.canRead() ) {
+	        		System.err.println( "Cannot read " + name + " file: " + file.getAbsolutePath() + ". Check permissions." );
+	        		System.exit( 0 );
+	        	}
+            } catch( Exception e ) {
+            	System.err.println( "Error accessing " + name + ". " );
+            	System.err.println( "Error: " + e.getMessage() );
+            	System.exit( 0 );
+            }
+        }
 	}
 	
 	/**
@@ -100,10 +144,36 @@ public class MainProgram {
 			
 			String line = null;
 			while ( ( line = br.readLine() ) != null )
-				System.out.println( line );				
+				System.err.println( line );				
 			
 		} catch ( Exception e ) {
-			System.out.println( "Error printing help." );
+			System.err.println( "Error printing help." );
+		}
+	}
+	
+	/**
+	 * Print runtime info to STD ERR
+	 * @throws Exception 
+	 */
+	public static void printRuntimeInfo() throws Exception {
+
+		try( BufferedReader br = new BufferedReader( new InputStreamReader( MainProgram.class.getResourceAsStream( "run.txt" ) ) ) ) {
+
+			String line = null;
+			while ( ( line = br.readLine() ) != null ) {
+
+				line = line.replace( "{{URL}}", PLinkConverterConstants.CONVERSION_PROGRAM_URI );
+				line = line.replace( "{{VERSION}}", PLinkConverterConstants.CONVERSION_PROGRAM_VERSION );
+
+				System.err.println( line );
+				
+			}
+			
+			System.err.println( "" );
+
+		} catch ( Exception e ) {
+			System.out.println( "Error printing runtime information." );
+			throw e;
 		}
 	}
 }
