@@ -82,10 +82,10 @@ public class MainProgram {
         }
 		
         String paramFile = (String)cmdLineParser.getOptionValue( plinkParamOpt );
-        checkFileFromArgsExists( true, paramFile, "p", "plink params" );
+        checkFileFromArgsExists( REQUIRED, paramFile, "p", "plink params" );
         
         String fastaFilePath = (String)cmdLineParser.getOptionValue( fastaFileOpt );
-        checkFileFromArgsExists( true, fastaFilePath, "f", "FASTA" );
+        checkFileFromArgsExists( REQUIRED, fastaFilePath, "f", "FASTA" );
         
         String outFile = (String)cmdLineParser.getOptionValue( outfileOpt );
         if( outFile == null ) {
@@ -95,12 +95,51 @@ public class MainProgram {
         }
         
         String binDirectory = (String)cmdLineParser.getOptionValue( installDirectoryOpt );
+        checkDirectoryFromArgsExists( NOT_REQUIRED, binDirectory, "b", "plink install" );
+
         String dataDirectory = (String)cmdLineParser.getOptionValue( dataDirectoryOpt );
+        checkDirectoryFromArgsExists( NOT_REQUIRED, dataDirectory, "r", "plink data" );
+        
         String linker = (String)cmdLineParser.getOptionValue( linkerOpt );
         
         MainProgram mp = new MainProgram();
         mp.convertSearch( paramFile, binDirectory, dataDirectory, outFile, fastaFilePath, linker );
         
+	}
+	
+	
+	private static void checkDirectoryFromArgsExists( boolean required, String filePath, String param, String name ) {
+		
+        if( filePath == null ) {
+        	
+        	if( !required ) {
+        		return;
+        	}
+        	
+			System.err.println( "The -" + param + " parameter is required." );
+        	System.err.println( "Run with the -h option for help." );
+			System.exit( 0 );
+        } else {
+        	File file = new File( filePath );
+            try {
+	
+	        	if( !file.exists() ) {
+	        		System.err.println( "Could not find " + name + " directory: " + file.getAbsolutePath() );
+	        		System.exit( 0 );
+	        	}
+	        	
+	        	if( !file.isDirectory() ) {
+	        		System.err.println( file.getAbsolutePath() + " does not point to a directory." );
+	        		System.err.println( "Please provide the path to a directory for the -" + param + " parameter." );
+	        		System.exit( 0 );
+	        	}
+	        	
+            } catch( Exception e ) {
+            	System.err.println( "Error accessing " + name + ". " );
+            	System.err.println( "Error: " + e.getMessage() );
+            	System.exit( 0 );
+            }
+        }
 	}
 	
 	private static void checkFileFromArgsExists( boolean required, String filePath, String param, String name ) {
@@ -123,10 +162,17 @@ public class MainProgram {
 	        		System.exit( 0 );
 	        	}
 	        	
+	        	if( file.isDirectory() ) {
+	        		System.err.println( file.getAbsolutePath() + " points to a directory." );
+	        		System.err.println( "Please provide the path to a specific file for the -" + param + " parameter." );
+	        		System.exit( 0 );
+	        	}
+	        	
 	        	if( !file.canRead() ) {
 	        		System.err.println( "Cannot read " + name + " file: " + file.getAbsolutePath() + ". Check permissions." );
 	        		System.exit( 0 );
 	        	}
+	        	
             } catch( Exception e ) {
             	System.err.println( "Error accessing " + name + ". " );
             	System.err.println( "Error: " + e.getMessage() );
@@ -176,4 +222,7 @@ public class MainProgram {
 			throw e;
 		}
 	}
+	
+	private static boolean REQUIRED = true;
+	private static boolean NOT_REQUIRED = false;
 }
