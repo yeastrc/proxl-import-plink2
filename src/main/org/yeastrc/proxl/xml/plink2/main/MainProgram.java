@@ -103,7 +103,14 @@ public class MainProgram {
         String linker = (String)cmdLineParser.getOptionValue( linkerOpt );
         
         MainProgram mp = new MainProgram();
-        mp.convertSearch( paramFile, binDirectory, dataDirectory, outFile, fastaFilePath, linker );
+        
+        try {
+        	mp.convertSearch( paramFile, binDirectory, dataDirectory, outFile, fastaFilePath, linker );
+        } catch( Throwable t ) {
+        	System.err.println( "\n\nEncountered an error during conversion:" );
+        	System.err.println( t.getMessage() );
+        	System.exit( 1 );
+        }
         
 	}
 	
