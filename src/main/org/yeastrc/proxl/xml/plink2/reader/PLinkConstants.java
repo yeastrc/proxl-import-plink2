@@ -62,6 +62,7 @@ public class PLinkConstants {
         tempLinkerMap.put( "EDC-DE",  "edc" );
         tempLinkerMap.put( "EDC",  "edc" );
         tempLinkerMap.put( "BS2G",  "bs2" );
+        tempLinkerMap.put( "TG", "tg" );
         
         LINKER_MAP_PLINK2PROXL = Collections.unmodifiableMap(tempLinkerMap);
         
