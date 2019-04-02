@@ -4,26 +4,6 @@ pLink 2.x to ProXL XML Converter: Redistributed Libraries
 Proxl makes use of and includes as part of its distribution 3rd party binary libraries.
 Please see below for copyright and licenses governing redistribution of those libraries.
 
-Apache Commons BeanUtils
-------------------------------
-http://commons.apache.org/proper/commons-beanutils/
-[Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-Apache Commons Configuration
-------------------------------
-https://commons.apache.org/proper/commons-configuration/
-[Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-Apache Commons Lang
-------------------------------
-https://commons.apache.org/proper/commons-lang/
-[Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
-Apache Commons Logging
-------------------------------
-https://commons.apache.org/proper/commons-logging/
-[Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0.txt)
-
 JArgs
 ------------------------------
 https://github.com/purcell/jargs/
@@ -60,23 +40,6 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 
-
-Eclipse Jar in Jar loader - Classes in jar-in-jar-loader.zip
-http://git.eclipse.org/c/jdt/eclipse.jdt.ui.git/plain/org.eclipse.jdt.ui/jar%20in%20jar%20loader/org/eclipse/jdt/internal/jarinjarloader/JarRsrcLoader.java
-[Eclipse Public License - v 1.0] (http://www.eclipse.org/legal/epl-v10.html)
-------------------------------
- Copyright (c) 2008, 2009 IBM Corporation and others.
- All rights reserved. This program and the accompanying materials
- are made available under the terms of the Eclipse Public License v1.0
- which accompanies this distribution, and is available at
- http://www.eclipse.org/legal/epl-v10.html
-
- Contributors:
-     Ferenc Hechler - initial API and implementation
-     Ferenc Hechler, ferenc_hechler@users.sourceforge.net - 219530 [jar application] add Jar-in-Jar ClassLoader option
-     Ferenc Hechler, ferenc_hechler@users.sourceforge.net - 262746 [jar exporter] Create a builder for jar-in-jar-loader.zip
-     Ferenc Hechler, ferenc_hechler@users.sourceforge.net - 262748 [jar exporter] extract constants for string literals in JarRsrcLoader et al.
-------------------------------
 
 
 
