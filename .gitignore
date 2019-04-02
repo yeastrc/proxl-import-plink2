@@ -23,6 +23,7 @@ hs_err_pid*
 /.settings/
 /classes/
 /deploy/
+/.idea/
 
 .classpath
 .project
