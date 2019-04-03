@@ -82,15 +82,11 @@ public class MainProgram implements Runnable {
 			"(e.g. my_plink_search_2018.02.25.csv) If not present, value from the parameters file will be used.")
 	private String dataDirectory;
 
-	@CommandLine.Option(names = { "-l", "--linker" }, description = "[Optional] Specify the name of the cross-linker, " +
-			"e.g., edc or dss" )
-	private String linker;
 
-
-	public void convertSearch( String plinkSearchParametersFile, String plinkBinDirectory, String plinkDataDirectory, String outfile, String fastaFilePath, String linkerOverride ) throws Exception {
+	public void convertSearch( String plinkSearchParametersFile, String plinkBinDirectory, String plinkDataDirectory, String outfile, String fastaFilePath ) throws Exception {
 		
 		System.err.print( "Loading search parameters... " );
-		PLinkSearchParameters params = PLinkSearchParametersLoader.getInstance().getPLinkSearch( plinkSearchParametersFile, plinkBinDirectory, linkerOverride );
+		PLinkSearchParameters params = PLinkSearchParametersLoader.getInstance().getPLinkSearch( plinkSearchParametersFile, plinkBinDirectory );
 		System.err.println( "Done." );
 		
 		System.err.print( "Loading search results... " );
@@ -122,7 +118,7 @@ public class MainProgram implements Runnable {
 		MainProgram mp = new MainProgram();
 
 		try {
-			mp.convertSearch( paramFile, binDirectory, dataDirectory, outFile, fastaFile, linker );
+			mp.convertSearch( paramFile, binDirectory, dataDirectory, outFile, fastaFile );
 		} catch( Throwable t ) {
 			System.err.println( "\n\nEncountered an error during conversion:" );
 			System.err.println( t.getMessage() );

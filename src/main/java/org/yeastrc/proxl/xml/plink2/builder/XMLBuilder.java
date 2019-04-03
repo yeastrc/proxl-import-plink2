@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.yeastrc.proxl.xml.plink2.annotations.PSMAnnotationTypes;
 import org.yeastrc.proxl.xml.plink2.annotations.PSMDefaultVisibleAnnotationTypes;
+import org.yeastrc.proxl.xml.plink2.objects.PLinkLinkerEnd;
 import org.yeastrc.proxl.xml.plink2.objects.PLinkModification;
 import org.yeastrc.proxl.xml.plink2.objects.PLinkReportedPeptide;
 import org.yeastrc.proxl.xml.plink2.objects.PLinkResult;
@@ -38,42 +39,8 @@ import org.yeastrc.proxl.xml.plink2.reader.PLinkSearchParameters;
 import org.yeastrc.proxl.xml.plink2.utils.ModificationLookupUtils;
 import org.yeastrc.proxl.xml.plink2.utils.NumberUtils;
 import org.yeastrc.proxl.xml.plink2.utils.PLinkUtils;
-import org.yeastrc.proxl_import.api.xml_dto.ConfigurationFile;
-import org.yeastrc.proxl_import.api.xml_dto.ConfigurationFiles;
-import org.yeastrc.proxl_import.api.xml_dto.CrosslinkMass;
-import org.yeastrc.proxl_import.api.xml_dto.CrosslinkMasses;
-import org.yeastrc.proxl_import.api.xml_dto.DecoyLabel;
-import org.yeastrc.proxl_import.api.xml_dto.DecoyLabels;
-import org.yeastrc.proxl_import.api.xml_dto.DefaultVisibleAnnotations;
-import org.yeastrc.proxl_import.api.xml_dto.DescriptivePsmAnnotation;
-import org.yeastrc.proxl_import.api.xml_dto.DescriptivePsmAnnotationTypes;
-import org.yeastrc.proxl_import.api.xml_dto.DescriptivePsmAnnotations;
-import org.yeastrc.proxl_import.api.xml_dto.FilterablePsmAnnotation;
-import org.yeastrc.proxl_import.api.xml_dto.FilterablePsmAnnotationType;
-import org.yeastrc.proxl_import.api.xml_dto.FilterablePsmAnnotationTypes;
-import org.yeastrc.proxl_import.api.xml_dto.FilterablePsmAnnotations;
-import org.yeastrc.proxl_import.api.xml_dto.LinkType;
-import org.yeastrc.proxl_import.api.xml_dto.LinkedPosition;
-import org.yeastrc.proxl_import.api.xml_dto.LinkedPositions;
-import org.yeastrc.proxl_import.api.xml_dto.Linker;
-import org.yeastrc.proxl_import.api.xml_dto.Linkers;
-import org.yeastrc.proxl_import.api.xml_dto.Modification;
-import org.yeastrc.proxl_import.api.xml_dto.Modifications;
-import org.yeastrc.proxl_import.api.xml_dto.Peptide;
-import org.yeastrc.proxl_import.api.xml_dto.Peptides;
-import org.yeastrc.proxl_import.api.xml_dto.ProxlInput;
-import org.yeastrc.proxl_import.api.xml_dto.Psm;
-import org.yeastrc.proxl_import.api.xml_dto.Psms;
-import org.yeastrc.proxl_import.api.xml_dto.ReportedPeptide;
-import org.yeastrc.proxl_import.api.xml_dto.ReportedPeptides;
-import org.yeastrc.proxl_import.api.xml_dto.SearchAnnotation;
-import org.yeastrc.proxl_import.api.xml_dto.SearchProgram;
+import org.yeastrc.proxl_import.api.xml_dto.*;
 import org.yeastrc.proxl_import.api.xml_dto.SearchProgram.PsmAnnotationTypes;
-import org.yeastrc.proxl_import.api.xml_dto.SearchProgramInfo;
-import org.yeastrc.proxl_import.api.xml_dto.SearchPrograms;
-import org.yeastrc.proxl_import.api.xml_dto.StaticModification;
-import org.yeastrc.proxl_import.api.xml_dto.StaticModifications;
-import org.yeastrc.proxl_import.api.xml_dto.VisiblePsmAnnotations;
 import org.yeastrc.proxl_import.create_import_file_from_java_objects.main.CreateImportFileFromJavaObjectsMain;
 
 /**
@@ -167,17 +134,62 @@ public class XMLBuilder {
 		Linker linker = new Linker();
 		linkers.getLinker().add( linker );
 		
-		linker.setName( params.getLinker().getProxlName() );
+		linker.setName( params.getLinker().getName().toLowerCase() );
 		
 		CrosslinkMasses masses = new CrosslinkMasses();
 		linker.setCrosslinkMasses( masses );
 		
 		CrosslinkMass xlinkMass = new CrosslinkMass();
+		if( params.getLinker().getFormula() != null ) {
+			xlinkMass.setChemicalFormula( params.getLinker().getFormula() );
+		}
 		linker.getCrosslinkMasses().getCrosslinkMass().add( xlinkMass );
 		
 		// set the mass for this crosslinker to the calculated mass for the crosslinker, as defined in the properties file
 		xlinkMass.setMass( NumberUtils.getRoundedBigDecimal( params.getLinker().getMonoCrosslinkMass() ) );
-		
+
+		//
+		// Add in the linkable/reactable linker ends as defined in the stavrox config file
+		//
+		LinkedEnds xLinkedEnds = new LinkedEnds();
+		linker.setLinkedEnds( xLinkedEnds );
+
+		for(PLinkLinkerEnd plinkLinkerEnd : params.getLinker().getLinkerEnds() ) {
+
+			LinkedEnd xLinkedEnd = new LinkedEnd();
+			xLinkedEnds.getLinkedEnd().add( xLinkedEnd );
+
+			Residues xResidues = new Residues();
+			xResidues.getResidue().addAll( plinkLinkerEnd.getResidues() );
+
+			xLinkedEnd.setResidues( xResidues );
+
+			ProteinTermini xProteinTermini = null;
+
+			if( plinkLinkerEnd.isLinksCTerminus() || plinkLinkerEnd.isLinksNTerminus() ) {
+
+				if( xProteinTermini == null ) {
+					xProteinTermini = new ProteinTermini();
+					xLinkedEnd.setProteinTermini( xProteinTermini );
+				}
+
+				if( plinkLinkerEnd.isLinksCTerminus() ) {
+					ProteinTerminus xProteinTerminus = new ProteinTerminus();
+					xProteinTermini.getProteinTerminus().add( xProteinTerminus );
+
+					xProteinTerminus.setTerminusEnd( ProteinTerminusDesignation.C );
+				}
+
+				if( plinkLinkerEnd.isLinksNTerminus() ) {
+					ProteinTerminus xProteinTerminus = new ProteinTerminus();
+					xProteinTermini.getProteinTerminus().add( xProteinTerminus );
+
+					xProteinTerminus.setTerminusEnd( ProteinTerminusDesignation.N );
+					xProteinTerminus.setDistanceFromTerminus( BigInteger.ZERO );
+				}
+			}
+		}
+
 		//
 		// Define the static mods
 		//

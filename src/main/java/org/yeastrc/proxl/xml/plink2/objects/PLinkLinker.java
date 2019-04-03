@@ -18,7 +18,7 @@
 
 package org.yeastrc.proxl.xml.plink2.objects;
 
-import org.yeastrc.proxl.xml.plink2.reader.PLinkConstants;
+import java.util.List;
 
 /**
  * Represents a pLink cross-linker, as defined by the syntax in modify.ini
@@ -28,25 +28,18 @@ import org.yeastrc.proxl.xml.plink2.reader.PLinkConstants;
  *
  */
 public class PLinkLinker {
-	
-	public PLinkLinker() { }
-	
-	/**
-	 * Get the name used by proxl to identify the cross-linker used in this experiment
-	 * @return
-	 * @throws Exception
-	 */
-	public String getProxlName() throws Exception {
-		
-		if( this.proxlNameOverride != null )
-			return this.proxlNameOverride;
-		
-		if( !PLinkConstants.LINKER_MAP_PLINK2PROXL.containsKey( this.getName() ) )
-			throw new Exception( "Can not map " + this.getName() + " to a ProXL linker." );
-		
-		return PLinkConstants.LINKER_MAP_PLINK2PROXL.get( this.getName() );
+
+	@Override
+	public String toString() {
+		return "PLinkLinker{" +
+				"name='" + name + '\'' +
+				", monoCrosslinkMass=" + monoCrosslinkMass +
+				", monoMonolinkMass=" + monoMonolinkMass +
+				", averageMonolinkMass=" + averageMonolinkMass +
+				", linkerEnds=" + linkerEnds +
+				'}';
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -55,36 +48,12 @@ public class PLinkLinker {
 		this.name = name;
 	}
 
-	public String getFirstLinkedResidueMotif() {
-		return firstLinkedResidueMotif;
-	}
-
-	public void setFirstLinkedResidueMotif(String firstLinkedResidueMotif) {
-		this.firstLinkedResidueMotif = firstLinkedResidueMotif;
-	}
-
-	public String getSecondLinkedResidueMotif() {
-		return secondLinkedResidueMotif;
-	}
-
-	public void setSecondLinkedResidueMotif(String secondLinkedResidueMotif) {
-		this.secondLinkedResidueMotif = secondLinkedResidueMotif;
-	}
-
 	public Double getMonoCrosslinkMass() {
 		return monoCrosslinkMass;
 	}
 
 	public void setMonoCrosslinkMass(Double monoCrosslinkMass) {
 		this.monoCrosslinkMass = monoCrosslinkMass;
-	}
-
-	public Double getAverageCrosslinkMass() {
-		return averageCrosslinkMass;
-	}
-
-	public void setAverageCrosslinkMass(Double averageCrosslinkMass) {
-		this.averageCrosslinkMass = averageCrosslinkMass;
 	}
 
 	public Double getMonoMonolinkMass() {
@@ -103,31 +72,27 @@ public class PLinkLinker {
 		this.averageMonolinkMass = averageMonolinkMass;
 	}
 
-	/**
-	 * @return the proxlNameOverride
-	 */
-	public String getProxlNameOverride() {
-		return proxlNameOverride;
+	public List<PLinkLinkerEnd> getLinkerEnds() {
+		return linkerEnds;
 	}
 
-	/**
-	 * @param proxlNameOverride the proxlNameOverride to set
-	 */
-	public void setProxlNameOverride(String proxlNameOverride) {
-		this.proxlNameOverride = proxlNameOverride;
+	public void setLinkerEnds(List<PLinkLinkerEnd> linkerEnds) {
+		this.linkerEnds = linkerEnds;
 	}
 
+	public String getFormula() {
+		return formula;
+	}
 
-
+	public void setFormula(String formula) {
+		this.formula = formula;
+	}
 
 	private String name;
-	private String proxlNameOverride;			// if this is set, this string will be used for the linker name that proxl recognizes
-	private String firstLinkedResidueMotif;
-	private String secondLinkedResidueMotif;
 	private Double monoCrosslinkMass;
-	private Double averageCrosslinkMass;
 	private Double monoMonolinkMass;
 	private Double averageMonolinkMass;
-	
+	private List<PLinkLinkerEnd> linkerEnds;
+	private String formula;
 	
 }

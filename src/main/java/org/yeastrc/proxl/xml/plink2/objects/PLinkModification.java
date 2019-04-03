@@ -41,12 +41,6 @@ public class PLinkModification {
 	public void setMonoisotopicMass(double monoisotopicMass) {
 		this.monoisotopicMass = monoisotopicMass;
 	}
-	public double getAverageMass() {
-		return averageMass;
-	}
-	public void setAverageMass(double averageMass) {
-		this.averageMass = averageMass;
-	}
 	public boolean isMonolink() {
 		return isMonolink;
 	}
@@ -64,7 +58,6 @@ public class PLinkModification {
 
 	private String name;
 	private double monoisotopicMass;
-	private double averageMass;
 	private boolean isMonolink = false;
 	private Collection<String> residues;
 }

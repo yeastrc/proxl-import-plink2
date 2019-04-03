@@ -106,12 +106,11 @@ public class ModificationLookupUtils {
 		}
 		
 		double monoMass = Double.parseDouble( fields[ 2 ] );
-		double avgMass = Double.parseDouble( fields[ 3 ] );
+//		double avgMass = Double.parseDouble( fields[ 3 ] );
 		
 		PLinkModification mod = new PLinkModification();
 		mod.setName( name );
 		mod.setMonoisotopicMass( monoMass );
-		mod.setAverageMass( avgMass );
 		mod.setResidues( residues );
 		
 		return mod;

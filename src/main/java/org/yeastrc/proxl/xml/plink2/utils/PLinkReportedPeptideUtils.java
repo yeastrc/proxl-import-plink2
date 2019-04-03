@@ -228,7 +228,6 @@ public class PLinkReportedPeptideUtils {
 				mods.put( position1, new ArrayList<PLinkModification>() );
 			
 			PLinkModification monoLinkMod = new PLinkModification();
-			monoLinkMod.setAverageMass( params.getLinker().getAverageMonolinkMass() );
 			monoLinkMod.setMonoisotopicMass( params.getLinker().getMonoMonolinkMass() );
 			monoLinkMod.setMonolink( true );
 			monoLinkMod.setName( "monolink" );

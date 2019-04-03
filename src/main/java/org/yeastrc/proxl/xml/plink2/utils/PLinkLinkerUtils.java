@@ -19,6 +19,11 @@
 package org.yeastrc.proxl.xml.plink2.utils;
 
 import org.yeastrc.proxl.xml.plink2.objects.PLinkLinker;
+import org.yeastrc.proxl.xml.plink2.objects.PLinkLinkerEnd;
+
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PLinkLinkerUtils {
 
@@ -36,22 +41,90 @@ public class PLinkLinkerUtils {
 		String[] fields = pLinkLinkerTextFormat.split( " " );
 		if( fields.length != 10 )
 			throw new Exception( "Did not get ten fields in linker representation: " + pLinkLinkerTextFormat );
-		
+
+
+
 		linker.setName( name );
-		linker.setFirstLinkedResidueMotif( fields[ 0 ] );
-		linker.setSecondLinkedResidueMotif( fields[ 1 ] );
+
+		List<PLinkLinkerEnd> linkerEnds = new ArrayList<>( 2 );
+		linkerEnds.add( getLinkerEndFromMotif( fields[ 0 ] ));
+		linkerEnds.add( getLinkerEndFromMotif( fields[ 1 ] ));
+		linker.setLinkerEnds( linkerEnds );
+
 		linker.setMonoCrosslinkMass( Double.valueOf( fields[ 2 ] ) );
 
-		if( !fields[ 3 ].equals( "" ) && !fields[ 3 ].equals( "0" ) )
-			linker.setAverageCrosslinkMass( Double.valueOf( fields[ 3 ] ) );
+		linker.setFormula( getFormulaFromMotif( fields[ 6 ] ) );
+
+//		if( !fields[ 3 ].equals( "" ) && !fields[ 3 ].equals( "0" ) )
+//			linker.setAverageCrosslinkMass( Double.valueOf( fields[ 3 ] ) );
 		
 		if( !fields[ 4 ].equals( "" ) && !fields[ 4 ].equals( "0" ) )
 			linker.setMonoMonolinkMass( Double.valueOf( fields[ 4 ] ) );
 
-		if( !fields[ 5 ].equals( "" ) && !fields[ 5 ].equals( "0" ) )
-			linker.setAverageMonolinkMass( Double.valueOf( fields[ 5 ] ) );
+//		if( !fields[ 5 ].equals( "" ) && !fields[ 5 ].equals( "0" ) )
+//			linker.setAverageMonolinkMass( Double.valueOf( fields[ 5 ] ) );
 		
 		return linker;
 	}
-	
+
+	private static PLinkLinkerEnd getLinkerEndFromMotif( String motif ) {
+
+		boolean linksNTerminus = false;
+		boolean linksCTerminus = false;
+		List<String> residues = new ArrayList<>();
+
+		for (int i = 0; i < motif.length(); i++){
+			String residue = String.valueOf( motif.charAt(i) );
+
+			if( residue.equals( "[" ) ) {
+				linksNTerminus = true;
+			} else if( residue.equals( "]" ) ) {
+				linksCTerminus = true;
+			} else {
+				residues.add( residue );
+			}
+
+		}
+
+		return new PLinkLinkerEnd( residues, linksNTerminus, linksCTerminus );
+	}
+
+	private static String getFormulaFromMotif( String motif ) {
+
+		try {
+
+			motif = motif.replaceAll("1H", "H");
+			motif = motif.replaceAll("2H", "D");
+
+			Map<String, Integer> atomCounts = new HashMap<>();
+
+			Pattern p = Pattern.compile("(\\w+)\\(([\\-0-9]+)\\)");
+			Matcher m = p.matcher(motif);
+
+			while (m.find()) {
+
+				String atom = m.group(1);
+				Integer count = Integer.parseInt(m.group(2));
+
+				if (!atomCounts.containsKey(atom)) {
+					atomCounts.put(atom, 0);
+				}
+
+				atomCounts.put(atom, atomCounts.get(atom) + count);
+
+			}
+
+			String formula = "";
+			for (String atom : atomCounts.keySet()) {
+				formula += atom + atomCounts.get(atom);
+			}
+
+			return formula;
+
+		} catch( Throwable t ) {
+			return null;
+		}
+
+	}
+
 }

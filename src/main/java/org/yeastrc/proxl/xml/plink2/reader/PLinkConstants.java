@@ -25,9 +25,7 @@ import java.util.Map;
 public class PLinkConstants {
 
 	public static final String SEARCH_PROGRAM_NAME = "pLink";	
-	
-	public static final String SEARCH_PROGRAM_VERSION = "2.x";
-	
+
 	public static final String _DEFAULT_PLINK_INSTALL_BIN_DIRECTORY = "C:\\pFindStudio\\pLink\\$$VERSION$$\\bin";
 	
 	public static final int LINK_TYPE_MONOLINK = 0;
@@ -46,27 +44,8 @@ public class PLinkConstants {
 	 */
 	public static final Map<Integer, String> PLINK_NAME_FOR_TYPE;
 	
-	/**
-	 * The crosslinkers that proxl currently knows how to deal with (e.g., linking rules)
-	 */
-	public static final Map<String, String> LINKER_MAP_PLINK2PROXL;
-	
+
 	static {
-        Map<String, String> tempLinkerMap = new HashMap<String, String>();
-        
-        tempLinkerMap.put( "BS3_STY", "bs3.sty" );
-        tempLinkerMap.put( "BS3", "bs3" );
-        tempLinkerMap.put( "DSS_STY",  "dss.sty" );
-        tempLinkerMap.put( "DSS",  "dss" );
-        tempLinkerMap.put( "DSSO",  "dsso" );
-        tempLinkerMap.put( "EDC-DE",  "edc" );
-        tempLinkerMap.put( "EDC",  "edc" );
-        tempLinkerMap.put( "BS2G",  "bs2" );
-        tempLinkerMap.put( "TG", "tg" );
-        
-        LINKER_MAP_PLINK2PROXL = Collections.unmodifiableMap(tempLinkerMap);
-        
-        
         
         
         Map<Integer, String> tempLinkTypeMap = new HashMap<Integer, String>();
@@ -77,6 +56,5 @@ public class PLinkConstants {
         
         PLINK_NAME_FOR_TYPE = Collections.unmodifiableMap( tempLinkTypeMap );
 	}
-	
-	
+
 }

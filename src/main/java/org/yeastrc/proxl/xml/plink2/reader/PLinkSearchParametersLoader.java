@@ -38,7 +38,7 @@ public class PLinkSearchParametersLoader {
 	 * @return
 	 * @throws Exception
 	 */
-	public PLinkSearchParameters getPLinkSearch( String pLinkINIFilename, String pLinkBinDirectory, String linkerOverride ) throws Exception {
+	public PLinkSearchParameters getPLinkSearch( String pLinkINIFilename, String pLinkBinDirectory ) throws Exception {
 
 		PLinkSearchParameters plinkSearch = new PLinkSearchParameters();
 
@@ -84,16 +84,9 @@ public class PLinkSearchParametersLoader {
 			throw new Exception( "Could not find linker: \"" + linkerName + "\" in xlink.ini file." );
 
 		PLinkLinker linker = PLinkLinkerUtils.getPLinkLinker( linkerName,  linkerDefinition );
-		if( linkerOverride != null )
-			linker.setProxlNameOverride( linkerOverride );
 
 		// since we only support 1 link, just set the linker to the first linker found
 		plinkSearch.setLinker( linker );
-		
-		// ensure proxl supports this linker
-		if( !PLinkConstants.LINKER_MAP_PLINK2PROXL.containsKey( plinkSearch.getLinker().getName() ) && linkerOverride == null ) {
-			throw new Exception( "Proxl does not currently support linker: " + plinkSearch.getLinker().getName() );
-		}
 		
 		return plinkSearch;
 	}
