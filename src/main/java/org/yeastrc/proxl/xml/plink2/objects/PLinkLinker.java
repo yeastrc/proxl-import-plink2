@@ -37,6 +37,8 @@ public class PLinkLinker {
 				", monoMonolinkMass=" + monoMonolinkMass +
 				", averageMonolinkMass=" + averageMonolinkMass +
 				", linkerEnds=" + linkerEnds +
+				", cleavedLinkerMasses=" + cleavedLinkerMasses +
+				", formula='" + formula + '\'' +
 				'}';
 	}
 
@@ -88,11 +90,20 @@ public class PLinkLinker {
 		this.formula = formula;
 	}
 
+	public List<Double> getCleavedLinkerMasses() {
+		return cleavedLinkerMasses;
+	}
+
+	public void setCleavedLinkerMasses(List<Double> cleavedLinkerMasses) {
+		this.cleavedLinkerMasses = cleavedLinkerMasses;
+	}
+
 	private String name;
 	private Double monoCrosslinkMass;
 	private Double monoMonolinkMass;
 	private Double averageMonolinkMass;
 	private List<PLinkLinkerEnd> linkerEnds;
+	private List<Double> cleavedLinkerMasses;
 	private String formula;
 	
 }

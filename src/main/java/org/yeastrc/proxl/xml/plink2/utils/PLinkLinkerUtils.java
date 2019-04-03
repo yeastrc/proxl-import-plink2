@@ -63,7 +63,22 @@ public class PLinkLinkerUtils {
 
 //		if( !fields[ 5 ].equals( "" ) && !fields[ 5 ].equals( "0" ) )
 //			linker.setAverageMonolinkMass( Double.valueOf( fields[ 5 ] ) );
-		
+
+		if( !fields[ 8 ].equals( "0" ) || !fields[ 9 ].equals( "0" ) ) {
+
+			List<Double> cleavedMasses = new ArrayList<>();
+
+			if( !fields[ 8 ].equals( "0" ) ) {
+				cleavedMasses.add( Double.parseDouble( fields[ 8 ] ) );
+			}
+
+			if( !fields[ 9 ].equals( "0" ) ) {
+				cleavedMasses.add( Double.parseDouble( fields[ 9 ] ) );
+			}
+
+			linker.setCleavedLinkerMasses( cleavedMasses );
+		}
+
 		return linker;
 	}
 

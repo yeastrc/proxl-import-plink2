@@ -19,6 +19,7 @@
 package org.yeastrc.proxl.xml.plink2.builder;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -144,7 +145,19 @@ public class XMLBuilder {
 			xlinkMass.setChemicalFormula( params.getLinker().getFormula() );
 		}
 		linker.getCrosslinkMasses().getCrosslinkMass().add( xlinkMass );
-		
+
+
+		if( params.getLinker().getCleavedLinkerMasses() != null && params.getLinker().getCleavedLinkerMasses().size() > 0 ) {
+
+			for( Double mass : params.getLinker().getCleavedLinkerMasses() ) {
+
+				CleavedCrosslinkMass cleavedMass = new CleavedCrosslinkMass();
+				cleavedMass.setMass(BigDecimal.valueOf( mass ) );
+				masses.getCleavedCrosslinkMass().add( cleavedMass );
+			}
+
+		}
+
 		// set the mass for this crosslinker to the calculated mass for the crosslinker, as defined in the properties file
 		xlinkMass.setMass( NumberUtils.getRoundedBigDecimal( params.getLinker().getMonoCrosslinkMass() ) );
 
