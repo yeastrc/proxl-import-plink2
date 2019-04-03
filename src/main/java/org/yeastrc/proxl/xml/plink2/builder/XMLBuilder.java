@@ -194,11 +194,22 @@ public class XMLBuilder {
 				}
 
 				if( plinkLinkerEnd.isLinksNTerminus() ) {
-					ProteinTerminus xProteinTerminus = new ProteinTerminus();
-					xProteinTermini.getProteinTerminus().add( xProteinTerminus );
 
-					xProteinTerminus.setTerminusEnd( ProteinTerminusDesignation.N );
-					xProteinTerminus.setDistanceFromTerminus( BigInteger.ZERO );
+					{
+						ProteinTerminus xProteinTerminus = new ProteinTerminus();
+						xProteinTermini.getProteinTerminus().add(xProteinTerminus);
+
+						xProteinTerminus.setTerminusEnd(ProteinTerminusDesignation.N);
+						xProteinTerminus.setDistanceFromTerminus(BigInteger.ZERO);
+					}
+
+					{
+						ProteinTerminus xProteinTerminus = new ProteinTerminus();
+						xProteinTermini.getProteinTerminus().add(xProteinTerminus);
+
+						xProteinTerminus.setTerminusEnd(ProteinTerminusDesignation.N);
+						xProteinTerminus.setDistanceFromTerminus(BigInteger.ONE);
+					}
 				}
 			}
 		}

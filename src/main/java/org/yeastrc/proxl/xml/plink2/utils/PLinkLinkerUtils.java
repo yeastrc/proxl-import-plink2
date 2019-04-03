@@ -97,6 +97,10 @@ public class PLinkLinkerUtils {
 				linksCTerminus = true;
 			} else {
 				residues.add( residue );
+
+				if( residue.equals( "K" ) ) {
+					linksNTerminus = true;		// this seems to be what pLink is doing with DSSO
+				}
 			}
 
 		}
