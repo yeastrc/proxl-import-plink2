@@ -30,13 +30,63 @@ import org.yeastrc.proxl.xml.plink2.reader.PLinkResultsLoader;
 import org.yeastrc.proxl.xml.plink2.reader.PLinkSearchParameters;
 import org.yeastrc.proxl.xml.plink2.reader.PLinkSearchParametersLoader;
 
-import jargs.gnu.CmdLineParser;
-import jargs.gnu.CmdLineParser.IllegalOptionValueException;
-import jargs.gnu.CmdLineParser.UnknownOptionException;
+import picocli.CommandLine;
 
-public class MainProgram {
+@CommandLine.Command(name = "java -jar " + PLinkConverterConstants.CONVERSION_PROGRAM_NAME,
+		mixinStandardHelpOptions = true,
+		version = PLinkConverterConstants.CONVERSION_PROGRAM_NAME + " " + PLinkConverterConstants.CONVERSION_PROGRAM_VERSION,
+		sortOptions = false,
+		synopsisHeading = "%n",
+		descriptionHeading = "%n@|bold,underline Description:|@%n%n",
+		optionListHeading = "%n@|bold,underline Options:|@%n",
+		description = "Convert the results of a pLink 2.x analysis to a ProXL XML file suitable for import into ProXL. " +
+				"Designed to work only with single, label-free searches that used a single cross-linker.",
+		footer = {
+				"",
+				"@|bold,underline Examples|@:",
+				"java -jar " + PLinkConverterConstants.CONVERSION_PROGRAM_NAME + " ^\n" +
+						"-p \"c:\\plink run\\run_name.plink\" ^\n" +
+						"-o \"c:\\out put\\mySearch.proxl.xml\" ^\n" +
+						"-f c:\\fastas\\myFasta.fasta",
+				"",
+				"java -jar " + PLinkConverterConstants.CONVERSION_PROGRAM_NAME + " ^\n" +
+						" -p \"C:\\Users\\PLink User\\Desktop\\gTuSC\\pLink_test.plink\" ^\n" +
+						" -o C:\\Users\\User\\Desktop\\gTuSC.proxl.xml ^\n" +
+						" -f C:\\fastas\\myFasta.fasta ^\n" +
+						" -b C:\\pFindStudio\\pLink\\2.3.0\\bin ^\n" +
+						" -r C:\\Users\\User\\Desktop\\gTuSC\\pLink_test\\reports",
+				""
+		}
+)
+public class MainProgram implements Runnable {
 
-	
+	@CommandLine.Option(names = { "-p", "--param" }, required = true, description = "[Required] Full path to pLink 2 " +
+			"parameters file used in the search (ends in .plink).")
+	private String paramFile;
+
+	@CommandLine.Option(names = { "-o", "--out" }, required = true, description = "[Required] Full path to use for the " +
+			"ProXL XML output file (including file name).")
+	private String outFile;
+
+	@CommandLine.Option(names = { "-f", "--fasta" }, required = true, description = "[Required] Full path to FASTA file " +
+			"used in the experiment.")
+	private String fastaFile;
+
+	@CommandLine.Option(names = { "-b", "--bin" }, description = "[Optional] Full path to the pLink installation directory, " +
+			"where modification.ini and xlink.ini may be found. This defaults to: C:\\pFindStudio\\pLink\\$VERSION\\bin " +
+			"Where $VERSION is found in the parameters file.")
+	private String binDirectory;
+
+	@CommandLine.Option(names = { "-r", "--reports" }, description = "[Optional] Full path to the data reports " +
+			"directory for pLink 2 results. This directory contains run_name.date.csv " +
+			"(e.g. my_plink_search_2018.02.25.csv) If not present, value from the parameters file will be used.")
+	private String dataDirectory;
+
+	@CommandLine.Option(names = { "-l", "--linker" }, description = "[Optional] Specify the name of the cross-linker, " +
+			"e.g., edc or dss" )
+	private String linker;
+
+
 	public void convertSearch( String plinkSearchParametersFile, String plinkBinDirectory, String plinkDataDirectory, String outfile, String fastaFilePath, String linkerOverride ) throws Exception {
 		
 		System.err.print( "Loading search parameters... " );
@@ -52,155 +102,90 @@ public class MainProgram {
 		builder.buildAndSaveXML(params, results, new File( outfile ), fastaFilePath );
 		System.err.println( "Done." );
 	}
-	
-	public static void main( String[] args ) throws Exception {
-		
+
+	public void run()  {
+
 		printRuntimeInfo();
-		
-		if( args.length < 1 || args[ 0 ].equals( "-h" ) ) {
-			printHelp();
+
+		checkFileFromArgsExists( paramFile, "p", "plink params" );
+
+		checkFileFromArgsExists(fastaFile, "f", "FASTA" );
+
+		if( binDirectory != null ) {
+			checkDirectoryFromArgsExists(binDirectory, "b", "plink install");
+		}
+
+		if( dataDirectory != null ) {
+			checkDirectoryFromArgsExists(dataDirectory, "r", "plink data");
+		}
+
+		MainProgram mp = new MainProgram();
+
+		try {
+			mp.convertSearch( paramFile, binDirectory, dataDirectory, outFile, fastaFile, linker );
+		} catch( Throwable t ) {
+			System.err.println( "\n\nEncountered an error during conversion:" );
+			System.err.println( t.getMessage() );
+			System.exit( 1 );
+		}
+
+	}
+	
+	public static void main( String[] args ) {
+
+		CommandLine.run(new MainProgram(), args);
+
+	}
+	
+	
+	private static void checkDirectoryFromArgsExists( String filePath, String param, String name ) {
+
+		File file = new File( filePath );
+		try {
+
+			if( !file.exists() ) {
+				System.err.println( "Could not find " + name + " directory: " + file.getAbsolutePath() );
+				System.exit( 0 );
+			}
+
+			if( !file.isDirectory() ) {
+				System.err.println( file.getAbsolutePath() + " does not point to a directory." );
+				System.err.println( "Please provide the path to a directory for the -" + param + " parameter." );
+				System.exit( 0 );
+			}
+
+		} catch( Exception e ) {
+			System.err.println( "Error accessing " + name + ". " );
+			System.err.println( "Error: " + e.getMessage() );
 			System.exit( 0 );
 		}
-		
-		CmdLineParser cmdLineParser = new CmdLineParser();
-		CmdLineParser.Option plinkParamOpt = cmdLineParser.addStringOption( 'p', "param" );	
-		CmdLineParser.Option outfileOpt = cmdLineParser.addStringOption( 'o', "out" );
-		CmdLineParser.Option fastaFileOpt = cmdLineParser.addStringOption( 'f', "fasta" );
-		CmdLineParser.Option installDirectoryOpt = cmdLineParser.addStringOption( 'b', "binary" );	
-		CmdLineParser.Option dataDirectoryOpt = cmdLineParser.addStringOption( 'r', "reports" );
-		CmdLineParser.Option linkerOpt = cmdLineParser.addStringOption( 'l', "linker" );
+	}
+	
+	private static void checkFileFromArgsExists( String filePath, String param, String name ) {
 
-        // parse command line options
-        try { cmdLineParser.parse(args); }
-        catch (IllegalOptionValueException e) {
-        	printHelp();
-            System.exit( 1 );
-        }
-        catch (UnknownOptionException e) {
-           printHelp();
-           System.exit( 1 );
-        }
-		
-        String paramFile = (String)cmdLineParser.getOptionValue( plinkParamOpt );
-        checkFileFromArgsExists( REQUIRED, paramFile, "p", "plink params" );
-        
-        String fastaFilePath = (String)cmdLineParser.getOptionValue( fastaFileOpt );
-        checkFileFromArgsExists( REQUIRED, fastaFilePath, "f", "FASTA" );
-        
-        String outFile = (String)cmdLineParser.getOptionValue( outfileOpt );
-        if( outFile == null ) {
-        	System.err.println( "The -o option is required." );
-        	System.err.println( "Run with the -h option for help." );
-        	System.exit( 1 );
-        }
-        
-        String binDirectory = (String)cmdLineParser.getOptionValue( installDirectoryOpt );
-        checkDirectoryFromArgsExists( NOT_REQUIRED, binDirectory, "b", "plink install" );
+		File file = new File( filePath );
+		try {
 
-        String dataDirectory = (String)cmdLineParser.getOptionValue( dataDirectoryOpt );
-        checkDirectoryFromArgsExists( NOT_REQUIRED, dataDirectory, "r", "plink data" );
-        
-        String linker = (String)cmdLineParser.getOptionValue( linkerOpt );
-        
-        MainProgram mp = new MainProgram();
-        
-        try {
-        	mp.convertSearch( paramFile, binDirectory, dataDirectory, outFile, fastaFilePath, linker );
-        } catch( Throwable t ) {
-        	System.err.println( "\n\nEncountered an error during conversion:" );
-        	System.err.println( t.getMessage() );
-        	System.exit( 1 );
-        }
-        
-	}
-	
-	
-	private static void checkDirectoryFromArgsExists( boolean required, String filePath, String param, String name ) {
-		
-        if( filePath == null ) {
-        	
-        	if( !required ) {
-        		return;
-        	}
-        	
-			System.err.println( "The -" + param + " parameter is required." );
-        	System.err.println( "Run with the -h option for help." );
+			if( !file.exists() ) {
+				System.err.println( "Could not find " + name + " file: " + file.getAbsolutePath() );
+				System.exit( 0 );
+			}
+
+			if( file.isDirectory() ) {
+				System.err.println( file.getAbsolutePath() + " points to a directory." );
+				System.err.println( "Please provide the path to a specific file for the -" + param + " parameter." );
+				System.exit( 0 );
+			}
+
+			if( !file.canRead() ) {
+				System.err.println( "Cannot read " + name + " file: " + file.getAbsolutePath() + ". Check permissions." );
+				System.exit( 0 );
+			}
+
+		} catch( Exception e ) {
+			System.err.println( "Error accessing " + name + ". " );
+			System.err.println( "Error: " + e.getMessage() );
 			System.exit( 0 );
-        } else {
-        	File file = new File( filePath );
-            try {
-	
-	        	if( !file.exists() ) {
-	        		System.err.println( "Could not find " + name + " directory: " + file.getAbsolutePath() );
-	        		System.exit( 0 );
-	        	}
-	        	
-	        	if( !file.isDirectory() ) {
-	        		System.err.println( file.getAbsolutePath() + " does not point to a directory." );
-	        		System.err.println( "Please provide the path to a directory for the -" + param + " parameter." );
-	        		System.exit( 0 );
-	        	}
-	        	
-            } catch( Exception e ) {
-            	System.err.println( "Error accessing " + name + ". " );
-            	System.err.println( "Error: " + e.getMessage() );
-            	System.exit( 0 );
-            }
-        }
-	}
-	
-	private static void checkFileFromArgsExists( boolean required, String filePath, String param, String name ) {
-				
-        if( filePath == null ) {
-        	
-        	if( !required ) {
-        		return;
-        	}
-        	
-			System.err.println( "The -" + param + " parameter is required." );
-        	System.err.println( "Run with the -h option for help." );
-			System.exit( 0 );
-        } else {
-        	File file = new File( filePath );
-            try {
-	
-	        	if( !file.exists() ) {
-	        		System.err.println( "Could not find " + name + " file: " + file.getAbsolutePath() );
-	        		System.exit( 0 );
-	        	}
-	        	
-	        	if( file.isDirectory() ) {
-	        		System.err.println( file.getAbsolutePath() + " points to a directory." );
-	        		System.err.println( "Please provide the path to a specific file for the -" + param + " parameter." );
-	        		System.exit( 0 );
-	        	}
-	        	
-	        	if( !file.canRead() ) {
-	        		System.err.println( "Cannot read " + name + " file: " + file.getAbsolutePath() + ". Check permissions." );
-	        		System.exit( 0 );
-	        	}
-	        	
-            } catch( Exception e ) {
-            	System.err.println( "Error accessing " + name + ". " );
-            	System.err.println( "Error: " + e.getMessage() );
-            	System.exit( 0 );
-            }
-        }
-	}
-	
-	/**
-	 * Print help to STD OUT
-	 */
-	public static void printHelp() {
-		
-		try( BufferedReader br = new BufferedReader( new InputStreamReader( MainProgram.class.getResourceAsStream( "help.txt" ) ) ) ) {
-			
-			String line = null;
-			while ( ( line = br.readLine() ) != null )
-				System.err.println( line );				
-			
-		} catch ( Exception e ) {
-			System.err.println( "Error printing help." );
 		}
 	}
 	
@@ -208,7 +193,7 @@ public class MainProgram {
 	 * Print runtime info to STD ERR
 	 * @throws Exception 
 	 */
-	public static void printRuntimeInfo() throws Exception {
+	public static void printRuntimeInfo()  {
 
 		try( BufferedReader br = new BufferedReader( new InputStreamReader( MainProgram.class.getResourceAsStream( "run.txt" ) ) ) ) {
 
@@ -226,10 +211,7 @@ public class MainProgram {
 
 		} catch ( Exception e ) {
 			System.out.println( "Error printing runtime information." );
-			throw e;
 		}
 	}
-	
-	private static boolean REQUIRED = true;
-	private static boolean NOT_REQUIRED = false;
+
 }
