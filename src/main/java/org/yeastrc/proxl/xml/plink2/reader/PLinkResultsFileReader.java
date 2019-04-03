@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 
+import com.opencsv.CSVReader;
 import org.yeastrc.proxl.xml.plink2.objects.PLinkReportedPeptide;
 import org.yeastrc.proxl.xml.plink2.objects.PLinkResult;
 import org.yeastrc.proxl.xml.plink2.utils.PLinkReportedPeptideUtils;
@@ -58,8 +59,8 @@ public class PLinkResultsFileReader {
 	public void close() {
 		this.isClosed = true;
 		
-		if( this.br != null ) {
-			try { this.br.close(); this.br = null; }
+		if( this.csvReader != null ) {
+			try { this.csvReader.close(); this.csvReader = null; }
 			catch( Exception e ) { ; }
 		}
 	}
@@ -77,13 +78,16 @@ public class PLinkResultsFileReader {
 		if( this.isDone )
 			return null;
 		
-		if( this.br == null ) {
-			this.br = new BufferedReader( new FileReader( this.file ) );
-			this.br.readLine();
+		if( this.csvReader == null ) {
+			this.csvReader = new CSVReader( new FileReader( this.file ) );
+
+			this.csvReader.readNext();	// throw away header
 		}		
 		
-		String line = this.br.readLine();
-		if( line == null ) {
+
+		String[] fields = this.csvReader.readNext();
+
+		if( fields == null ) {
 			this.isDone = true;
 			return null;
 		}
@@ -92,9 +96,7 @@ public class PLinkResultsFileReader {
 
 		try {
 			result.setType( type );
-			
-			String[] fields = line.split( "," );
-			
+
 			if( fields.length != 21 )
 				throw new Exception( "Expected 21 fields, got " + fields.length );
 			
@@ -124,7 +126,7 @@ public class PLinkResultsFileReader {
 		} catch (Exception e) {
 
 			System.err.println( "Got error processing pLink result:" );
-			System.err.println( "\tLine 1: " + line );
+			System.err.println( "\tFields: " + fields );
 			System.err.println( "Reason: " + e.getMessage() + "\n" );
 			
 			throw e;
@@ -135,7 +137,7 @@ public class PLinkResultsFileReader {
 	
 	
 	private File file;
-	private BufferedReader br;
+	private CSVReader csvReader;
 	private boolean isDone = false;
 	private int type;
 	private boolean isClosed = false;
