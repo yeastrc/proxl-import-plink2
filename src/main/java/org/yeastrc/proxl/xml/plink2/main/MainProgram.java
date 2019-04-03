@@ -26,6 +26,7 @@ import java.util.Collection;
 import org.yeastrc.proxl.xml.plink2.builder.XMLBuilder;
 import org.yeastrc.proxl.xml.plink2.constants.PLinkConverterConstants;
 import org.yeastrc.proxl.xml.plink2.objects.PLinkResult;
+import org.yeastrc.proxl.xml.plink2.reader.PLinkConstants;
 import org.yeastrc.proxl.xml.plink2.reader.PLinkResultsLoader;
 import org.yeastrc.proxl.xml.plink2.reader.PLinkSearchParameters;
 import org.yeastrc.proxl.xml.plink2.reader.PLinkSearchParametersLoader;
@@ -40,7 +41,8 @@ import picocli.CommandLine;
 		descriptionHeading = "%n@|bold,underline Description:|@%n%n",
 		optionListHeading = "%n@|bold,underline Options:|@%n",
 		description = "Convert the results of a pLink 2.x analysis to a ProXL XML file suitable for import into ProXL. " +
-				"Designed to work only with single, label-free searches that used a single cross-linker.",
+				"Designed to work only with single, label-free searches that used a single cross-linker. \n\n" +
+				"More info at: " + PLinkConverterConstants.CONVERSION_PROGRAM_URI,
 		footer = {
 				"",
 				"@|bold,underline Examples|@:",
