@@ -191,6 +191,7 @@ public class XMLBuilder {
 					xProteinTermini.getProteinTerminus().add( xProteinTerminus );
 
 					xProteinTerminus.setTerminusEnd( ProteinTerminusDesignation.C );
+					xProteinTerminus.setDistanceFromTerminus(BigInteger.ZERO);
 				}
 
 				if( plinkLinkerEnd.isLinksNTerminus() ) {
