@@ -84,6 +84,11 @@ public class MainProgram implements Runnable {
 			"(e.g. my_plink_search_2018.02.25.csv) If not present, value from the parameters file will be used.")
 	private String dataDirectory;
 
+	@CommandLine.Option(names = { "-v", "--verbose" }, description = "[Optional] If this flag is set, any error " +
+			"messages will include the full stack trace. Helpful for debugging and reporting errors to the " +
+			"maintainer of this converter.")
+	private boolean verboseRequested = false;
+
 
 	public void convertSearch( String plinkSearchParametersFile, String plinkBinDirectory, String plinkDataDirectory, String outfile, String fastaFilePath ) throws Exception {
 		
@@ -122,6 +127,11 @@ public class MainProgram implements Runnable {
 		try {
 			mp.convertSearch( paramFile, binDirectory, dataDirectory, outFile, fastaFile );
 		} catch( Throwable t ) {
+
+			if( verboseRequested ) {
+				t.printStackTrace();
+			}
+
 			System.err.println( "\n\nEncountered an error during conversion:" );
 			System.err.println( t.getMessage() );
 			System.exit( 1 );
