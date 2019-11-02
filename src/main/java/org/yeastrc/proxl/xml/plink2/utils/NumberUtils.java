@@ -58,7 +58,7 @@ public class NumberUtils {
 		//NumberFormat formatter = new DecimalFormat("0.0E0");
 
 		DecimalFormat formatter = (DecimalFormat)NumberFormat.getNumberInstance(Locale.US);
-		formatter.applyPattern("0.###E0");
+		formatter.applyPattern("0.0E0");
 		formatter.setRoundingMode(RoundingMode.HALF_UP);
 		formatter.setMinimumFractionDigits( NUMBER_DECIMAL_PLACES );
 		return formatter.format( value );
