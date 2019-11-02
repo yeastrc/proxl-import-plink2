@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 /**
  * Some utility methods for working with numbers.
@@ -47,17 +48,20 @@ public class NumberUtils {
 		
 		return bd;
 	}
-	
+
 
 	public static BigDecimal getScientificNotationBigDecimal( double value ) {
 		return new BigDecimal( getScientificNotation( value ) );
 	}
-	
+
 	public static String getScientificNotation( double value ) {
-		  NumberFormat formatter = new DecimalFormat("0.0E0");
-		  formatter.setRoundingMode(RoundingMode.HALF_UP);
-		  formatter.setMinimumFractionDigits( NUMBER_DECIMAL_PLACES );
-		  return formatter.format( value );
+		//NumberFormat formatter = new DecimalFormat("0.0E0");
+
+		DecimalFormat formatter = (DecimalFormat)NumberFormat.getNumberInstance(Locale.US);
+		formatter.applyPattern("0.###E0");
+		formatter.setRoundingMode(RoundingMode.HALF_UP);
+		formatter.setMinimumFractionDigits( NUMBER_DECIMAL_PLACES );
+		return formatter.format( value );
 	}
 	
 }
