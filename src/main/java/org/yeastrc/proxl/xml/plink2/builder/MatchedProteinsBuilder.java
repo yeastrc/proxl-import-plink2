@@ -20,11 +20,7 @@ package org.yeastrc.proxl.xml.plink2.builder;
 
 import java.io.File;
 import java.math.BigInteger;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.yeastrc.fasta.FASTAEntry;
 import org.yeastrc.fasta.FASTAHeader;
@@ -241,64 +237,22 @@ public class MatchedProteinsBuilder {
 	 *
 	 */
 	private class FastaProteinAnnotation {
-		
-		public int hashCode() {
-			
-			String hashString = this.getName();
-			
-			if( this.getDescription() != null )
-				hashString += this.getDescription();
-			
-			if( this.getTaxonomId() != null )
-				hashString += this.getTaxonomId().intValue();
-			
-			return hashString.hashCode();
-		}
-		
-		/**
-		 * Return true if name, description and taxonomy are all the same, false otherwise
-		 */
-		public boolean equals( Object o ) {
-			try {
-				
-				FastaProteinAnnotation otherAnno = (FastaProteinAnnotation)o;
-				
-				if( !this.getName().equals( otherAnno.getName() ) )
-					return false;
-				
-				
-				if( this.getDescription() == null ) {
-					if( otherAnno.getDescription() != null )
-						return false;
-				} else {
-					if( otherAnno.getDescription() == null )
-						return false;
-				}
-				
-				if( !this.getDescription().equals( otherAnno.getDescription() ) )
-					return false;
-				
-				
-				if( this.getTaxonomId() == null ) {
-					if( otherAnno.getTaxonomId() != null )
-						return false;
-				} else {
-					if( otherAnno.getTaxonomId() == null )
-						return false;
-				}
-				
-				if( !this.getTaxonomId().equals( otherAnno.getTaxonomId() ) )
-					return false;
-				
-				
-				return true;
-				
-			} catch( Exception e ) {
-				return false;
-			}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			FastaProteinAnnotation that = (FastaProteinAnnotation) o;
+			return name.equals(that.name) &&
+					Objects.equals(description, that.description) &&
+					Objects.equals(taxonomId, that.taxonomId);
 		}
 
-		
+		@Override
+		public int hashCode() {
+			return Objects.hash(name, description, taxonomId);
+		}
+
 		public String getName() {
 			return name;
 		}
