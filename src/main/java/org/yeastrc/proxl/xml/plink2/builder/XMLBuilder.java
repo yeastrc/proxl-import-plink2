@@ -310,7 +310,15 @@ public class XMLBuilder {
 							xmlModifications.getModification().add( xmlModification );
 							
 							xmlModification.setMass( NumberUtils.getRoundedBigDecimal( mod.getMonoisotopicMass() ) );
-							xmlModification.setPosition( new BigInteger( String.valueOf( position ) ) );
+
+							if( position == 0 ) {    // handle n-terminal
+								xmlModification.setIsNTerminal(true);
+							} else if( position == rp.getPeptide1().getSequence().length() + 1 ) {	// handle c-terminal
+								xmlModification.setIsCTerminal(true);
+							} else {
+								xmlModification.setPosition(new BigInteger(String.valueOf(position)));
+							}
+
 							xmlModification.setIsMonolink( mod.isMonolink() );
 							
 						}
@@ -360,7 +368,15 @@ public class XMLBuilder {
 							xmlModifications.getModification().add( xmlModification );
 							
 							xmlModification.setMass( NumberUtils.getRoundedBigDecimal( mod.getMonoisotopicMass() ) );
-							xmlModification.setPosition( new BigInteger( String.valueOf( position ) ) );
+
+							if( position == 0 ) {    // handle n-terminal
+								xmlModification.setIsNTerminal(true);
+							} else if( position == rp.getPeptide2().getSequence().length() + 1 ) {	// handle c-terminal
+								xmlModification.setIsCTerminal(true);
+							} else {
+								xmlModification.setPosition(new BigInteger(String.valueOf(position)));
+							}
+
 							xmlModification.setIsMonolink( mod.isMonolink() );
 							
 						}
