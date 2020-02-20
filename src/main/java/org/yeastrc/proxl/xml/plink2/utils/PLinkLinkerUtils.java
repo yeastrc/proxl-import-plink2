@@ -39,47 +39,66 @@ public class PLinkLinkerUtils {
 		PLinkLinker linker = new PLinkLinker();
 		
 		String[] fields = pLinkLinkerTextFormat.split( " " );
-		if( fields.length != 10 )
-			throw new Exception( "Did not get ten fields in linker representation: " + pLinkLinkerTextFormat );
-
-
 
 		linker.setName( name );
 
-		List<PLinkLinkerEnd> linkerEnds = new ArrayList<>( 2 );
-		linkerEnds.add( getLinkerEndFromMotif( fields[ 0 ] ));
-		linkerEnds.add( getLinkerEndFromMotif( fields[ 1 ] ));
-		linker.setLinkerEnds( linkerEnds );
+		List<PLinkLinkerEnd> linkerEnds = new ArrayList<>(2);
+		linkerEnds.add(getLinkerEndFromMotif(fields[0]));
+		linkerEnds.add(getLinkerEndFromMotif(fields[1]));
+		linker.setLinkerEnds(linkerEnds);
 
-		linker.setMonoCrosslinkMass( Double.valueOf( fields[ 2 ] ) );
+		linker.setMonoCrosslinkMass(Double.valueOf(fields[2]));
 
-		linker.setFormula( getFormulaFromMotif( fields[ 6 ] ) );
+		linker.setFormula(getFormulaFromMotif(fields[6]));
 
-//		if( !fields[ 3 ].equals( "" ) && !fields[ 3 ].equals( "0" ) )
-//			linker.setAverageCrosslinkMass( Double.valueOf( fields[ 3 ] ) );
-		
-		if( !fields[ 4 ].equals( "" ) && !fields[ 4 ].equals( "0" ) )
-			linker.setMonoMonolinkMass( Double.valueOf( fields[ 4 ] ) );
+		if (!fields[4].equals("") && !fields[4].equals("0"))
+			linker.setMonoMonolinkMass(Double.valueOf(fields[4]));
 
-//		if( !fields[ 5 ].equals( "" ) && !fields[ 5 ].equals( "0" ) )
-//			linker.setAverageMonolinkMass( Double.valueOf( fields[ 5 ] ) );
 
-		if( !fields[ 8 ].equals( "0" ) || !fields[ 9 ].equals( "0" ) ) {
+		if( fields.length == 10) {
 
-			List<Double> cleavedMasses = new ArrayList<>();
+			if (!fields[8].equals("0") || !fields[9].equals("0")) {
 
-			if( !fields[ 8 ].equals( "0" ) ) {
-				cleavedMasses.add( Double.parseDouble( fields[ 8 ] ) );
+				List<Double> cleavedMasses = new ArrayList<>();
+
+				if (!fields[8].equals("0")) {
+					cleavedMasses.add(Double.parseDouble(fields[8]));
+				}
+
+				if (!fields[9].equals("0")) {
+					cleavedMasses.add(Double.parseDouble(fields[9]));
+				}
+
+				linker.setCleavedLinkerMasses(cleavedMasses);
 			}
 
-			if( !fields[ 9 ].equals( "0" ) ) {
-				cleavedMasses.add( Double.parseDouble( fields[ 9 ] ) );
-			}
-
-			linker.setCleavedLinkerMasses( cleavedMasses );
+			return linker;
 		}
 
-		return linker;
+		// starting with plink 2.3.9, they added a 1/0 field at position 8 to indicate
+		// whether this is a cleavable linker. we'll ignore it and assume it's cleavable if
+		// cleaved linker masses are present.
+		if( fields.length == 11) {
+
+			if (!fields[9].equals("0") || !fields[10].equals("0")) {
+
+				List<Double> cleavedMasses = new ArrayList<>();
+
+				if (!fields[9].equals("0")) {
+					cleavedMasses.add(Double.parseDouble(fields[9]));
+				}
+
+				if (!fields[10].equals("0")) {
+					cleavedMasses.add(Double.parseDouble(fields[10]));
+				}
+
+				linker.setCleavedLinkerMasses(cleavedMasses);
+			}
+
+			return linker;
+		}
+
+		throw new Exception("Got unexpected number of fields in linker definition in xlink.ini. Got:\n" + pLinkLinkerTextFormat );
 	}
 
 	private static PLinkLinkerEnd getLinkerEndFromMotif( String motif ) {
