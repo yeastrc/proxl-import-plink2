@@ -104,6 +104,10 @@ public class MainProgram implements Runnable {
 		XMLBuilder builder = new XMLBuilder();
 		builder.buildAndSaveXML(params, results, new File( outfile ), fastaFilePath );
 		System.err.println( "Done." );
+
+		System.err.print( "Validating proxl XML... " );
+		ProxlXMLValidator.validateProxlXML(new File( outfile ));
+		System.err.println( "Done." );
 	}
 
 	public void run()  {
