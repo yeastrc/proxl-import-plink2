@@ -406,6 +406,7 @@ public class XMLBuilder {
 				xmlPsms.getPsm().add( xmlPsm );
 				
 				xmlPsm.setScanNumber( new BigInteger( String.valueOf( result.getScanNumber() ) ) );
+				xmlPsm.setScanFileName(result.getScanFilePrefix());
 				xmlPsm.setPrecursorCharge( new BigInteger( String.valueOf( result.getCharge() ) ) );
 				
 				if( rp.getType() == PLinkConstants.LINK_TYPE_CROSSLINK || rp.getType() == PLinkConstants.LINK_TYPE_LOOPLINK )

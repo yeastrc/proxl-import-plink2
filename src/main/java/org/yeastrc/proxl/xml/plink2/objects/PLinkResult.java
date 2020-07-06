@@ -148,12 +148,20 @@ public class PLinkResult {
 		this.betaEValue = betaEValue;
 	}
 
+	public String getScanFilePrefix() {
+		return scanFilePrefix;
+	}
+
+	public void setScanFilePrefix(String scanFilePrefix) {
+		this.scanFilePrefix = scanFilePrefix;
+	}
 
 	private PLinkReportedPeptide reportedPeptide;
 
 	private int scanNumber;
 	private int charge;
-	
+	private String scanFilePrefix;
+
 	private double precursorMass;
 	
 	

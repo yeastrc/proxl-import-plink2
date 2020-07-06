@@ -101,6 +101,8 @@ public class PLinkResultsFileReader {
 				throw new Exception( "Expected 21 fields, got " + fields.length );
 			
 			result.setScanNumber( ScanParsingUtils.getScanNumberFromReportedScan( fields[ 1 ] ) );
+			result.setScanFilePrefix( ScanParsingUtils.getScanFilePrefixFromReportedScan( fields[ 1 ] ) );
+
 			result.setCharge( Integer.parseInt( fields[ 2 ] ) );
 			
 			String rp = fields[ 4 ];
