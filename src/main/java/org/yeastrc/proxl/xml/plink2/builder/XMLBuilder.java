@@ -218,20 +218,22 @@ public class XMLBuilder {
 		//
 		// Define the static mods
 		//
-		StaticModifications smods = new StaticModifications();
-		proxlInputRoot.setStaticModifications( smods );
-		
-		for( String modName : ModificationLookupUtils.getStaticModificationNames( params ) ) {
-			PLinkModification smod = ModificationLookupUtils.getPLinkModificationFromParameters( modName, params );
-			
-			// a single defined mod can affect multiple residue types, get them all added
-			for( String residue : smod.getResidues() ) {
-				
-				StaticModification xmlSmod = new StaticModification();
-				xmlSmod.setAminoAcid( residue );
-				xmlSmod.setMassChange( NumberUtils.getRoundedBigDecimal( smod.getMonoisotopicMass() ) );
-				
-				smods.getStaticModification().add( xmlSmod );
+		if(ModificationLookupUtils.getStaticModificationNames( params ).size() > 0) {
+			StaticModifications smods = new StaticModifications();
+			proxlInputRoot.setStaticModifications(smods);
+
+			for (String modName : ModificationLookupUtils.getStaticModificationNames(params)) {
+				PLinkModification smod = ModificationLookupUtils.getPLinkModificationFromParameters(modName, params);
+
+				// a single defined mod can affect multiple residue types, get them all added
+				for (String residue : smod.getResidues()) {
+
+					StaticModification xmlSmod = new StaticModification();
+					xmlSmod.setAminoAcid(residue);
+					xmlSmod.setMassChange(NumberUtils.getRoundedBigDecimal(smod.getMonoisotopicMass()));
+
+					smods.getStaticModification().add(xmlSmod);
+				}
 			}
 		}
 		
